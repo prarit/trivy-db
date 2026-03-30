@@ -159,7 +159,7 @@ func TestAggregator_AggregateEntries(t *testing.T) {
 			},
 		},
 		{
-			name: "Warning - duplicated CVEs are deduplicated",
+			name: "Error - duplicated CVEs",
 			input: RawEntries{
 				{
 					FixedVersion: "1.0.0",
@@ -178,15 +178,7 @@ func TestAggregator_AggregateEntries(t *testing.T) {
 					CPE:          csaf.CPE("cpe:/o:redhat:enterprise_linux:9::baseos"),
 				},
 			},
-			want: Entries{
-				{
-					FixedVersion:    "1.0.0",
-					Status:          types.StatusFixed,
-					Arches:          []string{"x86_64"},
-					AffectedCPEList: []string{"cpe:/o:redhat:enterprise_linux:9::baseos"},
-					CVEs:            []CVEEntry{{ID: "CVE-2024-1001", Severity: types.SeverityHigh}},
-				},
-			},
+			wantErr: "duplicated CVEs found",
 		},
 		{
 			name: "Full aggregation - CVEs, Arches, and CPEs",
